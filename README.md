@@ -4,7 +4,7 @@ An independent full-stack project that combines FAISS-based retrieval,
 LangChain tool calling, structured itinerary generation, and an interactive
 MapLibre GL travel map for exploring Shanghai.
 
-> **Demo video:** The public Bilibili URL will be added here after upload.
+> **Demo video:** [Watch the full 6:46 demonstration on Bilibili](https://www.bilibili.com/video/BV1jopQ6vEo1/).
 
 ![Interactive itinerary map](docs/images/portfolio-hero.png)
 

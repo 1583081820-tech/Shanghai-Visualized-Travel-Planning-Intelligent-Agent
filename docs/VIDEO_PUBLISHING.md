@@ -1,5 +1,7 @@
 # Bilibili publishing copy
 
+Published video: https://www.bilibili.com/video/BV1jopQ6vEo1/
+
 ## Title
 
 Shanghai Visualized Travel Planning Intelligent Agent | AI, RAG and Interactive 3D Map
@@ -15,7 +17,7 @@ Highlights include Fast, Agent, and Smart chat modes; real-time route and
 weather tool calls; multi-turn session memory; and a visual workflow from user
 preferences to an explorable day-by-day itinerary.
 
-Public source code: [add GitHub URL after publishing]
+Public source code: https://github.com/1583081820-tech/Shanghai-Visualized-Travel-Planning-Intelligent-Agent
 
 ## 中文简介
 
@@ -23,7 +25,7 @@ Public source code: [add GitHub URL after publishing]
 检索增强生成、LangChain 多工具智能体、结构化行程生成和 MapLibre GL
 交互式地图，实现从需求收集、智能问答到动态路线可视化的完整体验。
 
-公开源代码：[发布后填写 GitHub URL]
+公开源代码：https://github.com/1583081820-tech/Shanghai-Visualized-Travel-Planning-Intelligent-Agent
 
 ## Chapters
 
