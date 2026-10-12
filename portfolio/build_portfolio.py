@@ -188,6 +188,26 @@ def link_card(
         pdf.linkURL(url, (x, y - height, x + width, y), relative=0, thickness=0)
 
 
+def visible_url_row(
+    pdf: canvas.Canvas,
+    x: float,
+    y: float,
+    width: float,
+    label: str,
+    url: str,
+) -> None:
+    """Draw a selectable, copyable URL in addition to the visual link card."""
+    pdf.setFillColor(MUTED)
+    pdf.setFont("Helvetica-Bold", 7)
+    pdf.drawString(x, y, label.upper())
+    url_x = x + 57
+    pdf.setFillColor(BLUE_DARK)
+    pdf.setFont("Courier", 6.4)
+    pdf.drawString(url_x, y, url)
+    url_width = min(stringWidth(url, "Courier", 6.4), width - 57)
+    pdf.linkURL(url, (url_x, y - 2, url_x + url_width, y + 8), relative=0, thickness=0)
+
+
 def cover_page(pdf: canvas.Canvas, links: dict[str, str], draft: bool) -> None:
     pdf.setFillColor(PAPER)
     pdf.rect(0, 0, PAGE_W, PAGE_H, fill=1, stroke=0)
@@ -246,7 +266,11 @@ def cover_page(pdf: canvas.Canvas, links: dict[str, str], draft: bool) -> None:
     link_card(pdf, MARGIN, card_y, card_w, "GitHub repository", links["github_url"], "View source and setup")
     link_card(pdf, MARGIN + card_w + gap, card_y, card_w, "Demo video", links["video_url"], "Watch full demonstration")
 
-    note_y = card_y - 102
+    url_y = card_y - 80
+    visible_url_row(pdf, MARGIN, url_y, PAGE_W - 2 * MARGIN, "GitHub", links["github_url"])
+    visible_url_row(pdf, MARGIN, url_y - 17, PAGE_W - 2 * MARGIN, "Video", links["video_url"])
+
+    note_y = card_y - 132
     pdf.setFillColor(INK)
     pdf.setFont("Helvetica-Bold", 10.5)
     pdf.drawString(MARGIN, note_y, "One project. Three proofs of capability.")
