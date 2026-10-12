@@ -1,0 +1,392 @@
+@import "tailwindcss";
+
+/* 防止横向滚动条 */
+html, body {
+  overflow-x: hidden;
+}
+
+/* 去掉 number 输入框的上下箭头 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* MapLibre 容器样式 */
+.maplibre-map { 
+  width: 100%; 
+  height: 100%; 
+}
+.maplibregl-canvas:focus { 
+  outline: none; 
+}
+
+/* 景点悬停提示框核心样式 */
+.poi-tooltip {
+  z-index: 1001; /* 高于标记点的 z-index:1000 */
+  pointer-events: none;
+}
+
+/* 路线加载动画 */
+@keyframes pulse-line {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+.route-animated {
+  stroke-dasharray: 10, 5;
+  animation: pulse-line 30s linear infinite;
+}
+/* 原有样式保留，追加以下内容 */
+/* 页面过渡动画 */
+.page-fade-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-fade-active {
+  transition: all 0.4s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+/* 欢迎页渐入动画 */
+.welcome-fade {
+  animation: welcomeFade 1s ease-in-out;
+}
+@keyframes welcomeFade {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+/* 卡片悬浮动效 */
+.card-hover {
+  transition: all 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+/* 按钮点击动效 */
+.btn-active:active {
+  transform: scale(0.97);
+}
+/* 原有样式保留，追加以下飞机动画 */
+/* 像素飞机飞行动画 */
+@keyframes pixelFly {
+  0% {
+    transform: translateX(-250px); /* 从屏幕左侧外开始 */
+  }
+  100% {
+    transform: translateX(calc(100vw + 250px)); /* 飞到屏幕右侧外结束 */
+  }
+}
+
+/* 原有Tailwind导入保留不动 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------- 以下是新增的自定义动画 -------------------------- */
+@layer utilities {
+  /* 星星闪烁动画 */
+  .animate-twinkle {
+    animation: twinkle infinite alternate;
+  }
+
+  /* 按钮轻微倾斜呼吸动画 */
+  .animate-tilt {
+    animation: tilt 8s infinite linear;
+    transform-origin: center;
+  }
+
+  /* 慢速旋转（用于Logo指南针） */
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  /* 蓝色发光效果 */
+  .glow-blue {
+    filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.8));
+  }
+}
+
+/* 关键帧定义 */
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+@keyframes tilt {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(0.5deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-0.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* 流星雨特效 */
+.meteor {
+  position: absolute;
+  top: -10%;
+  width: 1px;
+  height: 1px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.8), 0 0 8px 2px rgba(255,255,255,0.5);
+  animation: meteor linear infinite;
+}
+
+.meteor-1 { left: 10%; animation-duration: 3s; animation-delay: 0s; }
+.meteor-2 { left: 30%; animation-duration: 4s; animation-delay: 1s; }
+.meteor-3 { left: 50%; animation-duration: 5s; animation-delay: 2s; }
+.meteor-4 { left: 70%; animation-duration: 3.5s; animation-delay: 0.5s; }
+.meteor-5 { left: 90%; animation-duration: 4.5s; animation-delay: 1.5s; }
+
+@keyframes meteor {
+  0% {
+    transform: translate(0, 0) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100px, 100vh) rotate(180deg);
+    opacity: 0;
+  }
+}
+@import "tailwindcss";
+
+/* Apple Premium Design Theme Variables and Custom Classes */
+@layer utilities {
+  .glassmorphism {
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glassmorphism-modal {
+    background: rgba(8, 10, 20, 0.9);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Artistic Serif Font Stack for Luxury Editorial Chinese Typography */
+  .font-artistic {
+    font-family: Garamond, Georgia, Baskerville, STSong, "Songti SC", "SimSun", serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 15, 30, 0.95);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- High-End Cinematic Animations --- */
+
+/* Hero Title Reveal (Elegant Fade Up + Spacing Expansion) */
+@keyframes hero-title-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(5px);
+    letter-spacing: 0.1em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    letter-spacing: 0.25em;
+  }
+}
+
+/* Hero Subtitle Reveal */
+@keyframes subtitle-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Panoramic Slow Zoom (Cinematic Ken Burns Effect) */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1.05);
+    filter: brightness(0.65);
+  }
+  50% {
+    transform: scale(1.12);
+    filter: brightness(0.75);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: brightness(0.65);
+  }
+}
+
+/* Elegant Card Fade Up & Blur In */
+@keyframes card-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Ambient Pulse (Slow Breathing Orbs) */
+@keyframes ambient-breathe {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.15) translate(2vw, 2vh);
+    opacity: 0.25;
+  }
+}
+
+/* Decorative Gold Line Expansion */
+@keyframes line-expand {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 80px;
+  }
+}
+
+/* Animation Utility Classes */
+.animate-hero-reveal {
+  animation: hero-title-reveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-subtitle-reveal {
+  animation: subtitle-reveal 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.4s;
+  opacity: 0; /* Initial state before animation starts */
+}
+
+.animate-ken-burns {
+  animation: ken-burns 30s ease-in-out infinite;
+}
+
+.animate-card-fade-up {
+  animation: card-fade-up 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-ambient-breathe-1 {
+  animation: ambient-breathe 12s ease-in-out infinite;
+}
+
+.animate-ambient-breathe-2 {
+  animation: ambient-breathe 16s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-line-expand {
+  animation: line-expand 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.8s;
+}
+
+/* Staggered Delays for Card Entrances */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-900 { animation-delay: 900ms; }
+.delay-1000 { animation-delay: 1000ms; }
+.delay-1100 { animation-delay: 1100ms; }
+.delay-1200 { animation-delay: 1200ms; }
+
+/* Grid Line Pattern */
+.bg-grid-pattern {
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Elegant & Minimalist Shooting Star (Meteor) Animation */
+@keyframes meteor-anim {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-45deg);
+  }
+  6% {
+    opacity: 0.95;
+  }
+  16% {
+    opacity: 0;
+    transform: translate3d(-500px, 500px, 0) rotate(-45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-500px, 500px, 0) rotate(-45deg);
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  width: 130px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glowing meteor head */
+.shooting-star::before {
+  content: "";
+  position: absolute;
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 
+    0 0 10px 2px rgba(255, 255, 255, 1),
+    0 0 25px 5px rgba(59, 130, 246, 0.5);
+  left: 0;
+  top: -1.25px;
+}
+
+/* Staggered natural delay and position configurations */
+.star-1 { top: 6%; right: 8%; animation: meteor-anim 15s linear infinite; animation-delay: 0.5s; }
+.star-2 { top: 14%; right: 32%; animation: meteor-anim 18s linear infinite; animation-delay: 4.2s; }
+.star-3 { top: 22%; right: 5%; animation: meteor-anim 16s linear infinite; animation-delay: 8.0s; }
+.star-4 { top: 34%; right: 45%; animation: meteor-anim 22s linear infinite; animation-delay: 2.1s; }
+.star-5 { top: 48%; right: 15%; animation: meteor-anim 17s linear infinite; animation-delay: 11.0s; }
+.star-6 { top: 62%; right: 28%; animation: meteor-anim 20s linear infinite; animation-delay: 6.0s; }
+.star-7 { top: 75%; right: 7%; animation: meteor-anim 19s linear infinite; animation-delay: 13.5s; }
+.star-8 { top: 85%; right: 38%; animation: meteor-anim 21s linear infinite; animation-delay: 9.5s; }
+

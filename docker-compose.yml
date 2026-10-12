@@ -1,0 +1,136 @@
+# ==============================================
+# Docker Compose 编排文件
+# 一键启动所有服务
+# ==============================================
+
+name: shanghai-travel-agent
+
+services:
+  # ========== MySQL 数据库 ==========
+  mysql:
+    image: mysql:8.0
+    container_name: travel-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-travel_ai}
+      MYSQL_USER: ${MYSQL_USER:-travel}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-travel123}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - travel-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========== Redis 缓存 ==========
+  redis:
+    image: redis:7-alpine
+    container_name: travel-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - travel-network
+    healthcheck:
+      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then redis-cli -a \"$$REDIS_PASSWORD\" ping; else redis-cli ping; fi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========== 后端服务 ==========
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: travel-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=mysql+pymysql://${MYSQL_USER:-travel}:${MYSQL_PASSWORD:-travel123}@mysql:3306/${MYSQL_DATABASE:-travel_ai}?charset=utf8mb4
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_ENABLED=true
+      - FAISS_INDEX_PATH=/app/data/faiss_index
+      - FAISS_INDEX_NAME=travel_knowledge
+      - DOUBAO_API_KEY=${DOUBAO_API_KEY:-}
+      - DOUBAO_BASE_URL=${DOUBAO_BASE_URL:-https://ark.cn-beijing.volces.com/api/v3}
+      - DOUBAO_MODEL=${DOUBAO_MODEL:-}
+      - DOUBAO_LITE_MODEL=${DOUBAO_LITE_MODEL:-}
+      - AMAP_KEY=${AMAP_KEY:-}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-BAAI/bge-small-zh-v1.5}
+      - EMBEDDING_DEVICE=cpu
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - CORS_ORIGINS=*
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend/data:/app/data
+      - ./backend/models:/app/models
+    networks:
+      - travel-network
+
+  # ========== 前端服务 ==========
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/v1
+        VITE_AMAP_WEB_KEY: ${VITE_AMAP_WEB_KEY:-}
+    container_name: travel-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - travel-network
+
+  # ========== Nginx 网关 ==========
+  nginx:
+    image: nginx:alpine
+    container_name: travel-nginx
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - travel-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+# ========== 数据卷 ==========
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ========== 网络 ==========
+networks:
+  travel-network:
+    driver: bridge

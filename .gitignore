@@ -1,0 +1,47 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local model and vector caches
+backend/models/
+backend/data/faiss_index/
+*.faiss
+*.pkl
+
+# Editors and local tooling
+.idea/
+.vscode/
+.superpowers/
+
+# Large media and internal documents
+*.mp4
+*.mov
+*.avi
+*.docx
+backend/data/*.pdf
+
+# Generated application deliverables
+output/
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
